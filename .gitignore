@@ -1,0 +1,10 @@
+*.swp
+.ipynb_checkpoints/
+__pycache__/
+Testdata.mat
+*.asv
+*.aux
+*.log
+*.synctex.gz
+*.pdf
+data/
