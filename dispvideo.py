@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import scipy.io
 import numpy as np
@@ -52,7 +53,7 @@ def play_video(four_dim_array, threshold):
         image.set_data(tmp)
         plt.pause(0.02)
 
-def main(fname, threshold):
+def _main(fname, threshold):
     try:
         threshold = int(threshold)
     except TypeError:
@@ -77,4 +78,4 @@ if __name__ == "__main__":
         threshold = sys.argv[2]
     except IndexError:
         threshold=0
-    main(fname, threshold)
+    _main(fname, threshold)
