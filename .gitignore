@@ -7,4 +7,5 @@ Testdata.mat
 *.log
 *.synctex.gz
 *.pdf
-data/
+mat/
+npdata/
