@@ -40,18 +40,22 @@ def play_video(four_dim_array, threshold):
     """
     Assumes the input is [y, x, RGB, sample], plays the video
     """
-    _, _, _, samples = four_dim_array.shape
     gray = grayscale(four_dim_array)
+    play_grascale(gray, threshold)
+
+def play_grascale(gray, threshold):
     thresholded = apply_threshold(gray, threshold)
     f = plt.figure(1)
     f.canvas.manager.window.activateWindow()
     f.canvas.manager.window.raise_()
     p = f.add_subplot(111)
     image = p.imshow(thresholded[:, :, 0], cmap="gray", vmin=0, vmax=255)
+    _, _, samples = thresholded.shape
     for i in range(1, samples):
         tmp = thresholded[:, :, i]
         image.set_data(tmp)
         plt.pause(0.02)
+
 
 def _main(fname, threshold):
     try:
