@@ -66,7 +66,7 @@ def main(infile, thresh):
     cv2.destroyAllWindows()
     print("Number of failed measurements: {}".format(np.isnan(x_positions).sum()))
     input("If this is ok, ENTER to save; Ctrl-C to cancel.")
-    np.save(outfile, np.stack((x, y)))
+    np.save(outfile, np.stack((x_positions, y_positions)))
 
 if __name__ == "__main__":
     fname = sys.argv[1]
