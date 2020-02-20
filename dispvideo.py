@@ -15,7 +15,6 @@ def get_channel(x, channel):
     return np.squeeze(ret[:, :, channel, :])
 
 def grayscale(x):
-
     red = get_channel(x, RED)
     green = get_channel(x, GREEN)
     blue = get_channel(x, BLUE)
