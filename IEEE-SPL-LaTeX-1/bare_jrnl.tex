@@ -73,10 +73,15 @@ In short, however, SVD of a data matrix produces three matrices:
 
 These resulting matrices can be interpreted within the context of this exercise as follows:
 \begin{enumerate}
-    \item $\myMatrix{V}$: Each column contains the direction of the PCA modes.
+    \item $\myMatrix{U}$: Each column contains the direction of the PCA modes.
     \item $\myMatrix{\Sigma}$: Singular values on the diagonal, representing the energy of each mode.
-    \item $\myMatrix{U}$: Each column represents the displacement in time along a mode
+    \item $\myMatrix{V}$: Each column represents the displacement in time along a mode
 \end{enumerate}
+
+In an example provided by Kelsey Maass on Piazza, the meaning of the $\myMatrix{U}$ and
+$\myMatrix{V}$ matrix are swapped. This is becasue the data matrix $\myMatrix{X}$ arranges the
+observations as columns, rather than rows, which is opposite the convention used in Dr. Kutz's
+book.
 
 \subsection{Properties}
 
@@ -165,82 +170,134 @@ be seen in Figures \ref{kutz1}, \ref{kutz2}, \ref{kutz3}, and \ref{kutz4}.
 	\caption{Kutz Plot, Case 1}
 	\label{kutz1}
 \end{figure}
+
+The first results (Fig. \ref{kutz1}) appear fairly straightforward. We know that only one major mode exists
+in the data -- strong motion in the Z direction; however, PCA indicates there are two modes. Why
+is this occuring? Little to no effort was made to synchronize the videos during image tracking. As
+such, looking at the temporal behaviors of each mode, we can observe what appears to be a ``lag" or
+``phase shift". I believe this is due to the same phenomena (the oscillation) being observed at a
+slightly delayed time.
+
+It is also worth noting that the modal directions themselves are comprised primarily of one or two
+directions. This corresponds to the known orientation of the cameras and the motion relative
+to that.
+
+If the videos were perfectly synchronized, through the use of a ``clapper" or similar, I'm
+certain these two modes would collapse into one strongly dominant mode. Alternatively, if time
+permitted, manual re-alignment in post could achieve a similar goal.
+
+\begin{figure}
+    \centerline{\includegraphics[width=\columnwidth]{case1.png}}
+    \caption{X and Y positions of the object in each camera, Case 1}
+    \label{case1}
+\end{figure}
+
+This is supported by inspecting Fig. \ref{case1} and noting that while camera 1's y location and
+camera 3's x location both start in a ``trough" whereas camera 2's y location begins at a ``peak",
+suggesting out of phase behavior.
+
 \begin{figure}
 	\centerline{\includegraphics[width=\columnwidth]{kutz2.png}}
 	\caption{Kutz Plot, Case 2}
 	\label{kutz2}
 \end{figure}
+
+Based upon this, the results in the shaken camera case (Fig. \ref{kutz2}) are reasonable. The
+introduction of noise raises the modal energy floor. Instead of the ideal of one clearly dominant
+mode (or even 2, as explained in case 1), secondary modes also become candidates. Additionally,
+the modal directions become more mixed, with contributions from more modes. This makes sense, as
+the introduction of shake looks like travel along other dimensions.
+
 \begin{figure}
 	\centerline{\includegraphics[width=\columnwidth]{kutz3.png}}
 	\caption{Kutz Plot, Case 3}
 	\label{kutz3}
 \end{figure}
+
+Introducing another dimension of motion in the form of pendulum-like oscillations, along with
+the previously stated issues of synchronization, produce results that aren't unexpected. Ideally,
+two modes would dominate in Fig. \ref{kutz3}, but instead 3 seem to be of significance. Again,
+I believe this can be explained by comparing the relative peaks and valleys of the X and Y
+coordinates in each of the camera's recordings (Fig. \ref{case3}).
+
+\begin{figure}
+    \centerline{\includegraphics[width=\columnwidth]{case3.png}}
+    \caption{X and Y positions of the object in each camera, Case 3}
+    \label{case3}
+\end{figure}
+
+Finally, case 4 introduces rotation. Since this is being mapped to rectangular coordinates,
+I would expect to see an additional mode corresponding to the "depth" direction. Looking at the
+resulting modal directions and temporal behavior of each component, this seems correct. The added
+modal directions of each mode are largely independent of each other. The first two temporal trends
+appear to be oscillatory, corresponding to the spring and the pendulum action, while the third
+shows a ``flattening" at several points (most notably in the span between samples 100 and 150),
+likely corresponding to the paint can's rotation reversing.
+
 \begin{figure}
 	\centerline{\includegraphics[width=\columnwidth]{kutz4.png}}
 	\caption{Kutz Plot, Case 4}
 	\label{kutz4}
 \end{figure}
 
-The results are a bit confusing. The temporal data indicates that mode zero (the highest energy mode)
-demonstrates little change. My best guess is that mode 0 is some offset, since the data hasn't been
-normalized to have a mean of zero. Counter to this, however, is that the highest energy mode is
-supposed to be the highest variance and thus best at capturing the movement of the paint can; a
-roughly constant offset has, by definition, roughly zero variance. Exacerbating the matter, the
-second mode appears to demonstrate temporal behavior that matches what is expected -- strongly
-oscillatory movement.
-
-The modal data also presents a challenge to parse. Based upon the examples in Dr. Kutz's book, I'm
-led to believe this is akin to the basis function for a transform, as evidenced by the example in
-figure 160. But, the resulting data doesn't present such a clear function. My assumption is either
-that the underlying function is a sinusoid or a somthing like a dirac impulse, which when changed
-in time produces the oscillatory behavior of the system.
-
-Encouragingly, both the first and second cases (Fig. \ref{kutz1}, \ref{kutz2}) produce VERY
-similar modal results while producing different temporal results. This is indicative of the
-ability of the method to ignore the noise introduced by the camera shake.
-
-\subsection{Reconstruction/Projection}
-Given that a primary use of PCA is to project the data into a lower subspace, this was explored in
-several key plots. For one, the effect of increasing the number of modes was demonstrated in Fig.
-\ref{changing_recon}. As expected, more modes show greater complexity of behavior of each time
-series. In this case, much beyond two or three modes doesn't appear to improve or change the
-resulting plots.
-\begin{figure}
-	\centerline{\includegraphics[width=\columnwidth]{changing_recon.png}}
-	\caption{Case 1 reconstructed with N modes}
-	\label{changing_recon}
-\end{figure}
-
-Based upon this threshold, the remaining cases were reconstructed with 3 modes (Figs. \ref{recon2},
-\ref{recon3}, \ref{recon4}).
-\begin{figure}
-	\centerline{\includegraphics[width=\columnwidth]{recon2.png}}
-	\caption{Case 2, Modes=3}
-	\label{recon2}
-\end{figure}
-\begin{figure}
-	\centerline{\includegraphics[width=\columnwidth]{recon3.png}}
-	\caption{Case 3, Modes=3}
-	\label{recon3}
-\end{figure}
-\begin{figure}
-	\centerline{\includegraphics[width=\columnwidth]{recon4.png}}
-	\caption{Case 4, Modes=3}
-	\label{recon4}
-\end{figure}
-
 
 \section{Summary and Conclusion}
+From these experiments the primary conclusions can be drawn:
+\begin{enumerate}
+    \item PCA is powerful at decomposing complex, high dimensional data into its constituent parts.
+    \item PCA is sensitive to the relative scaling of data, along with the presence of noise.
+    \item PCA is sensitive to temporal shifts in data, and unaligned data may produce false modes.
+    \item Image tracking is non-trivial and should have plenty of time dedicated to it.
+\end{enumerate}
+
+Ultimately, I think I need more time to fully grok the underlying mathematics of SVD/PCA, but I
+have no doubt at this point of its wide applicability and power.
 
 
 \newpage
 \clearpage
 \newpage
 \section{Appendix A: Functions Used}
-\subsection{\code{numpy.lib.stride\_tricks.as\_strided()}}
-Given a dataset (1D, in this case), a stride length, and a window width,
-return a ``view" into the data. See \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.lib.stride_tricks.as_strided.html}{here}.
+Commonly used functions, such as plotting, routine mathematical manipulations, and others, are
+not included here as they are deemed trivially understood.
 
+\subsection{\code{scipy.io.loadmat}}
+Given a path to a *.mat file, load the contents as a dictionary. Includes the header and global
+variables that may be included.
+
+\subsection{\code{cv2.cvtColor}}
+Converts an image or video to a new color representation, such as RGB, BGR, or Grayscale.
+\subsection{\code{cv2.threshold}}
+Given a grayscale image or video and a luminance threshold, apply a thresholding function.
+Options include binary, to zero, and others.
+\subsection{\code{cv2.imshow}}
+Show an image using CV2.
+\subsection{\code{cv2.selectROI}}
+Assuming an image is displayed, allow the user to select a bounding box "region of interest".
+\subsection{\code{cv2.TrackerCSRT\_create}}
+Create a CSRT tracker. Must be initialzed with a bounding shape and initial frame.
+\subsection{\code{cv2.rectangle}}
+Draw a rectangle on the active frame with the given corner coordinates, color specification,
+and line thickness.
+\subsection{\code{cv2.waitKey}}
+Waits the given time in milliseconds. If a key is pressed, its value is returned. Used for checking
+for early quits ("q" key, here).
+\subsection{\code{cv2.destroyAllWindows}}
+Method to assert the dominance of *nix systems over weak, MSDOS systems. Kidding, really its an
+active method to remove all open windows managed by OpenCV.
+
+\subsection{\code{numpy.load}}
+Loads a \code{*.npy} file. Conversions were done on the original \code{*.mat} files to make them
+easier to import.
+\subsection{\code{numpy.squeeze}}
+Given an \code{ndarray} with any axes of size 1, return a copy of the data with the redundant
+axes removed. E.g., a (3,1) matrix will become (3,).
+\subsection{\code{numpy.stack}}
+Given a sequence of arrays in tuple form, join them along a given axis. Used to combine the
+individual observations into a data matrix.
+\subsection{\code{numpy.linalg.svd}}
+Compute the Singular Value Decomposition of the input matrix, and returns the $\myMatrix{U}$,
+$\myMatrix{\Sigma}$, and $\myMatrix{V}^{*}$ matrices.
 
 \newpage
 \clearpage
